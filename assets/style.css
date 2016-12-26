@@ -1,0 +1,70 @@
+.jumbotron{
+  background-color:  #8f4848;
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+  margin-left: none;
+  margin-right: none;
+
+}
+
+div.container{
+  width: 100%;
+  font-family: arial, helvetica, sans-serif;
+}
+
+#searchpar {
+  background-color: #8f4848;
+  color: white;
+  size: 18px;
+  font-weight: bold
+  border-color: #8f4848;
+  border-width: 2px;
+}
+
+
+button {
+  background: #8f4848;
+  color: white;
+}
+
+.btn {
+  font-size: 12px;
+}
+
+.form-group {
+color: #492828;
+font-weight: 200;
+font-size: 12px;
+}
+
+.form-control:focus {
+  border-color: #8f4848;
+  box-shadow: none;
+  border-width: 2px;
+}
+
+.btn:focus, btn.active, btn:active, .btn:focus:active{
+  outline: none;
+}
+
+.panel-default {
+    border-color: #8f4848;
+    border-width: 2px;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  padding: 0px 0px 20px 10px;
+}
+
+
+#text {
+  font-weight: bold;
+  font-size: 16px;
+}
+ #tnameAlert, #destAlert, #freqAlert, #firstAlert {
+    display: none;
+ }

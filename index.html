@@ -1,15 +1,272 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Game</title>
-            <link rel="stylesheet" type="text/css" href="css/style.css">
-            <!-- Added a link to Bootstrap-->
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  </head>
-  <body>
+<html lang="en">
+
+<?php include "index.php";?>
+
+<head>
+  <meta charset="utf-8">
+ 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+
+   <title>Train Scheduler</title>
+
+ <!--  <link rel="stylesheet" href="../assets/css/font-awesome.min.css"> -->
+ <link rel="stylesheet" type="text/css" href="assets/reset.css">
+ <link rel="stylesheet" type="text/css" href="assets/style.css">
+</head>
+
+<body>
+
+<script src="https://use.fontawesome.com/7b6dd2ca46.js"></script>
+ 
+<div class="container">
+    <div class="jumbotron">
+   <h1>Anytime is Train Time</h1> 
+   <h4>Choo Choo. Chee Chee.</h4></div>
+
+<div class="container" id="rContainer">
+   <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading" id="searchpar">
+          Current Train Schedule
+        </div>
+        <div class="panel-body">
+            <table class="table">
+              <thead class="thead-inverse">
+                <tr>
+                <th class='col-md-3 bd'>Train Name</th>
+                <th class='col-md-3 bd'>Destination</th>
+                <th class='col-md-2'>Frequency (min)</th>
+                <th class='col-md-2'>Next Arrival</th>
+                <th class='col-md-2'>Minutes Away</th>
+              </tr>
+            </thead>
+            <tbody id="display">
+            
+    <!-- all the <th> contents that are generated below go in here--> 
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+
      
+<div class="container" >
+   <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading" id="searchpar">
+          Add Train
+        </div>
+        <div class="panel-body">
+        <form id="formId">
+          <div class="form-group">
+            <label for="tname">Train Name:</label>
+            <input type="name" class="form-control" id="tname" placeholder="Train Name">
+            <div id="tnameAlert" class="alert alert-danger fade in">
+              <strong>Warning! </strong> The train name cannot be blank!
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="dest">Destination:</label>
+            <!-- <input type="text" class="form-control" id="numRecords" placeholder="5"> -->
+             <input type="name" class="form-control" id="keyword" placeholder="Keyword">
+             <div id="destAlert" class="alert alert-danger fade in">
+                <strong>Warning! </strong> The train name cannot be blank!
+            </div>
+          </div>
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+          <div class="form-group">
+            <label for="FirstTrain">First Train Time (HH:mm - military time):</label>
+            <input type="name" class="form-control" id="first" >
+           
+          <div id="firstAlert" class="alert alert-danger fade in">
+          <strong>Warning!</strong> First Train cannot be null!
+          </div>
+          </div>
 
-  </body>
+          <div class="form-group">
+            <label for="freq">Frequency (min):</label>
+            <input type="number" class="form-control" id="freq" min="1">
+            <div id="freqAlert" class="alert alert-danger fade in">
+              <strong>Warning!</strong> Frequency cannpt be null!
+            </div>
+          </div>
+        </form>
+        <button type="submit" class="btn" id="frmSubmit" id="test">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        Search
+        </button>  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  
+  <!-- Displaying the results -->
+<script src="https://code.jquery.com/jquery.js"></script>
+ <!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ <script type="text/javascript">
+  
+  $("#frmSubmit").on("click", function(event) {
+
+    event.preventDefault();
+    $("#startDateAlert").hide();
+    $("#endDateAlert").hide();
+    $("#keywordAlert").hide();
+
+    var queryUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+    var q = ($("#keyword").val()).trim();
+    var begin_date = ($("#startDate").val()).trim();
+    var end_date = ($("#endDate").val()).trim();
+    var page = ($("#numRecords").val()).trim();
+
+     if (q!=""){
+          $("#keywordAlert").hide();
+      }else{
+          $("#keywordAlert").show();
+          return;
+      }
+    
+    queryUrl += '?' + $.param({
+      'api-key': "05dd5e0a5d1841718337d9de569ceb6c",
+      'q':  q,
+      // 'page': page,
+      'hl': "true",
+      //'sort': "newest",
+      'facet_field': "source",
+      'facet_filter': "true"
+    });
+     
+    
+
+    // Add date only if the user inputs the date
+    if(begin_date != ""){
+        if(parseInt(begin_date) >= 1850 && parseInt(begin_date) < 2017){
+            queryUrl += '&begin_date='+ begin_date + '0101';        
+        }else{
+              $("#startDateAlert").show();
+              return;
+        }
+      
+    }
+    if(end_date != ""){
+      if(parseInt(end_date) >= 1850 && parseInt(end_date) < 2017){
+          queryUrl += '&end_date='+ end_date + '1231';
+        
+        }else{
+            $("#endDateAlert").show();
+            return;
+        }
+    }
+       dispAjaxData(queryUrl, page);
+      
+      });
+
+  /*
+    Run the ajax query and display the results in the search panel
+  */
+  function dispAjaxData(queryUrl, page){
+    var base_url = "http://www.nytimes.com/";
+    console.log(queryUrl); 
+    var newsDiv;
+
+    $.ajax({
+
+        url: queryUrl,
+        method: 'GET'
+
+    })
+    .done(function(database) {
+      // response.addHeader("Access-Control-Allow-Origin", "http://www.nytimes.com");
+          console.log(database);
+
+          var results = database.response.docs;
+          console.log(results.length);
+          $("#display").empty();
+          console.log(page);
+          numResults = page;
+          if(page > results.length){
+              numResults = results.length
+          }
+
+        for (var i = 0; i < numResults; i++) {
+            newsDiv = $("<tr class='item'>");
+
+            var img = $("<img>");
+            
+            // Check if an image url is being returned in the response
+            // if not put in a place holder
+            if (results[i].multimedia.length > 0) {
+
+              var docImage = base_url + results[i].multimedia[0].url;
+
+              img.attr("src" , docImage);
+              console.log(results[i].multimedia[0].url)
+            }
+            else{
+              img.attr("src" , "assets/images/placeholder.jpg");
+            }
+            img.addClass("img-responsive");
+            //  img.addClass("col-md-3");
+            var fromLeft = 10;
+            var date = results[i].pub_date;
+            date = date.substring(fromLeft , date);
+            console.log(date);
+            var p = $("<p id='text'>");
+            var headText = p;
+            headText = results[i].headline.main;
+            headText += ("<br>" + "-" + results[i].lead_paragraph);
+
+            var html = results[i].web_url;
+            console.log(html);
+            var link = $("<a id='link'>").attr("href", html).html("READ THE FULL ARTICLE");
+            newsDiv.append("<td>" + date + "</td>");
+            var im = $("<td>");
+            im.html(img);
+            newsDiv.append(im);
+            //newsDiv.append(img);
+            newsDiv.append("<td>" + headText + "</td>");
+            var lnk = $("<td>");
+            lnk.html(link);
+            newsDiv.append(lnk);
+
+           $(".table tbody").prepend(newsDiv);
+        
+        }
+
+        });
+  }
+
+
+  $("#clr").on("click", function(event) {
+        event.preventDefault();
+       $("#formId")[0].reset();
+        $("#display").empty();
+  });
+
+ 
+
+</script>
+
+</body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
