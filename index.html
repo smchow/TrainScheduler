@@ -111,8 +111,23 @@
 <script src="https://code.jquery.com/jquery.js"></script>
  <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
  <script type="text/javascript">
-  
+
+
+// Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAQQI1Bj44eLLLun92dvmUQQuJgtPmipFY",
+        authDomain: "trainscheduler-91bf6.firebaseapp.com",
+        databaseURL: "https://trainscheduler-91bf6.firebaseio.com",
+        storageBucket: "trainscheduler-91bf6.appspot.com",
+        messagingSenderId: "593113604347"
+      };
+
+    firebase.initializeApp(config);
+    var dataRef = firebase.database();
+
+
   $("#frmSubmit").on("click", function(event) {
 
     event.preventDefault();
