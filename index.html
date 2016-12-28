@@ -186,77 +186,29 @@
   /*
     Run the ajax query and display the results in the search panel
   */
-  function dispAjaxData(queryUrl, page){
-    var base_url = "http://www.nytimes.com/";
-    console.log(queryUrl); 
-    var newsDiv;
-
-    $.ajax({
-
-        url: queryUrl,
-        method: 'GET'
-
-    })
-    .done(function(database) {
-      // response.addHeader("Access-Control-Allow-Origin", "http://www.nytimes.com");
-          console.log(database);
-
-          var results = database.response.docs;
-          console.log(results.length);
-          $("#display").empty();
-          console.log(page);
-          numResults = page;
-          if(page > results.length){
-              numResults = results.length
-          }
-
-        for (var i = 0; i < numResults; i++) {
-            newsDiv = $("<tr class='item'>");
-
-            var img = $("<img>");
-            
-            // Check if an image url is being returned in the response
-            // if not put in a place holder
-            if (results[i].multimedia.length > 0) {
-
-              var docImage = base_url + results[i].multimedia[0].url;
-
-              img.attr("src" , docImage);
-              console.log(results[i].multimedia[0].url)
-            }
-            else{
-              img.attr("src" , "assets/images/placeholder.jpg");
-            }
-            img.addClass("img-responsive");
-            //  img.addClass("col-md-3");
-            var fromLeft = 10;
-            var date = results[i].pub_date;
-            date = date.substring(fromLeft , date);
-            console.log(date);
-            var p = $("<p id='text'>");
-            var headText = p;
-            headText = results[i].headline.main;
-            headText += ("<br>" + "-" + results[i].lead_paragraph);
-
-            var html = results[i].web_url;
-            console.log(html);
-            var link = $("<a id='link'>").attr("href", html).html("READ THE FULL ARTICLE");
-            newsDiv.append("<td>" + date + "</td>");
-            var im = $("<td>");
-            im.html(img);
-            newsDiv.append(im);
-            //newsDiv.append(img);
-            newsDiv.append("<td>" + headText + "</td>");
-            var lnk = $("<td>");
-            lnk.html(link);
-            newsDiv.append(lnk);
-
-           $(".table tbody").prepend(newsDiv);
-        
-        }
-
-        });
-  }
+ dataRef.ref().on("child_added", function(childSnapshot) {
+      // Log everything that's coming out of snapshot
+      console.log(childSnapshot.val().name);
+      console.log(childSnapshot.val().email);
+      console.log(childSnapshot.val().age);
+      console.log(childSnapshot.val().comment);
+      console.log(childSnapshot.val().joinDate);
+      // full list of items to the well
+      /*$("#full-member-list").append("<div class='well'><span id='name'> " + childSnapshot.val().name +
+        " </span><span id='email'> " + childSnapshot.val().email +
+        " </span><span id='age'> " + childSnapshot.val().age +
+        " </span><span id='comment'> " + childSnapshot.val().comment + " </span></div>");*/
+        newsDiv = $("<tr class='item'>");
+        newsDiv.append("<td>" + childSnapshot.val().name + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().email + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().joinDate + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().name + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().email + "</td>");
+        $(".table tbody").prepend(newsDiv);
+    // Handle the errors
+    }, function(errorObject) {
+      console.log("Errors handled: " + errorObject.code);
+    });
 
 
   $("#clr").on("click", function(event) {
