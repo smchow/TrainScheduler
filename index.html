@@ -72,7 +72,7 @@
           <div class="form-group">
             <label for="dest">Destination:</label>
             <!-- <input type="text" class="form-control" id="numRecords" placeholder="5"> -->
-             <input type="name" class="form-control" id="keyword" placeholder="Keyword">
+             <input type="name" class="form-control" id="dest" placeholder="Destination">
              <div id="destAlert" class="alert alert-danger fade in">
                 <strong>Warning! </strong> The train name cannot be blank!
             </div>
@@ -131,55 +131,54 @@
   $("#frmSubmit").on("click", function(event) {
 
     event.preventDefault();
-    $("#startDateAlert").hide();
-    $("#endDateAlert").hide();
-    $("#keywordAlert").hide();
+    $("#tnameAlert").hide();
+    $("#firstAlert").hide();
+    $("#destAlert").hide();
+    $("#freqAlert").hide();
 
-    var queryUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-    var q = ($("#keyword").val()).trim();
-    var begin_date = ($("#startDate").val()).trim();
-    var end_date = ($("#endDate").val()).trim();
-    var page = ($("#numRecords").val()).trim();
+    //var queryUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+    var tname = ($("#tname").val()).trim();
+    var dest = ($("#dest").val()).trim();
+    var first = ($("#first").val()).trim();
+    var freq = ($("#freq").val()).trim();
 
-     if (q!=""){
-          $("#keywordAlert").hide();
+     if (tname != ""){
+          $("#tnameAlert").hide();
       }else{
-          $("#keywordAlert").show();
+          $("#tnameAlert").show();
           return;
       }
-    
-    queryUrl += '?' + $.param({
-      'api-key': "05dd5e0a5d1841718337d9de569ceb6c",
-      'q':  q,
-      // 'page': page,
-      'hl': "true",
-      //'sort': "newest",
-      'facet_field': "source",
-      'facet_filter': "true"
-    });
-     
-    
 
-    // Add date only if the user inputs the date
-    if(begin_date != ""){
-        if(parseInt(begin_date) >= 1850 && parseInt(begin_date) < 2017){
-            queryUrl += '&begin_date='+ begin_date + '0101';        
-        }else{
-              $("#startDateAlert").show();
-              return;
-        }
-      
-    }
-    if(end_date != ""){
-      if(parseInt(end_date) >= 1850 && parseInt(end_date) < 2017){
-          queryUrl += '&end_date='+ end_date + '1231';
-        
-        }else{
-            $("#endDateAlert").show();
-            return;
-        }
-    }
-       dispAjaxData(queryUrl, page);
+
+      if (dest != ""){
+          $("#destAlert").hide();
+      }else{
+          $("#destAlert").show();
+          return;
+      }
+
+       if (first != ""){
+          $("#firstAlert").hide();
+      }else{
+          $("#firstAlert").show();
+          return;
+      }
+       if (freq != ""){
+          $("#freqAlert").hide();
+      }else{
+          $("#freqAlert").show();
+          return;
+      }
+
+       dataRef.ref().push({
+        name: tname,
+        email: dest,
+        age: first,
+        comment: freq,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
+      });
+      // Don't refresh the page!
+      return false;
       
       });
 
