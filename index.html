@@ -112,6 +112,7 @@
  <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
  <script type="text/javascript">
 
 
@@ -171,10 +172,10 @@
       }
 
        dataRef.ref().push({
-        name: tname,
-        email: dest,
-        age: first,
-        comment: freq,
+        tname: tname,
+        dest: dest,
+        firstTrain: first,
+        freq: freq,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
       });
       // Don't refresh the page!
@@ -183,26 +184,28 @@
       });
 
   /*
-    Run the ajax query and display the results in the search panel
+    get snapshot of the firebase display the results
   */
  dataRef.ref().on("child_added", function(childSnapshot) {
       // Log everything that's coming out of snapshot
-      console.log(childSnapshot.val().name);
-      console.log(childSnapshot.val().email);
-      console.log(childSnapshot.val().age);
-      console.log(childSnapshot.val().comment);
-      console.log(childSnapshot.val().joinDate);
+      console.log(childSnapshot.val().tname);
+      console.log(childSnapshot.val().dest);
+      console.log(childSnapshot.val().firstTrain);
+      console.log(childSnapshot.val().freq);
+      console.log(childSnapshot.val().dateAdded);
+      console.log(childSnapshot.val());
+      //debugger;
       // full list of items to the well
       /*$("#full-member-list").append("<div class='well'><span id='name'> " + childSnapshot.val().name +
         " </span><span id='email'> " + childSnapshot.val().email +
         " </span><span id='age'> " + childSnapshot.val().age +
         " </span><span id='comment'> " + childSnapshot.val().comment + " </span></div>");*/
         newsDiv = $("<tr class='item'>");
-        newsDiv.append("<td>" + childSnapshot.val().name + "</td>");
-        newsDiv.append("<td>" + childSnapshot.val().email + "</td>");
-        newsDiv.append("<td>" + childSnapshot.val().comment + "</td>");
-        newsDiv.append("<td>" + childSnapshot.val().name + "</td>");
-        newsDiv.append("<td>" + childSnapshot.val().email + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().tname + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().dest + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().freq + "</td>");
+        newsDiv.append("<td>" + childSnapshot.val().firstTrain + "</td>");
+        newsDiv.append("<td>" + moment().format('hh:mm:ss') + "</td>");
         $(".table tbody").prepend(newsDiv);
     // Handle the errors
     }, function(errorObject) {
