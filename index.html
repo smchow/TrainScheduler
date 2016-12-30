@@ -194,15 +194,23 @@
       console.log(childSnapshot.val().freq);
       console.log(childSnapshot.val().dateAdded);
       console.log(childSnapshot.val());
-      var convertedDate = "Dec 29 2016 " + childSnapshot.val().firstTrain + " am";
+      var convertedDate = moment().format('MM D YYYY ') + childSnapshot.val().firstTrain ;
       console.log(convertedDate);
       var freq_int = parseInt(childSnapshot.val().freq);
-      var i = parseInt(moment().diff(moment(convertedDate), "minutes") )/childSnapshot.val().freq;
-      console.log(i);
-      var j = freq_int * (i - Math.floor(i));
-      console.log();
-      console.log(freq_int - j)
-      var k = moment().add((freq_int - j),'minutes').toString();
+      console.log('freq_int' + freq_int)
+      var i = parseInt(moment().diff(moment(convertedDate), 'minutes') )/freq_int;
+      console.log('i' + i);
+      if (i > 0){
+        var j = freq_int * (i - Math.floor(i));
+        console.log('j' + j);
+        console.log(freq_int - j);
+        var l = Math.round(freq_int - j);
+        var k = moment().add((freq_int - j),'minutes').format('HH:mm a');
+      } else {
+        var k = moment(convertedDate).format('HH:mm a');
+        var l = moment(convertedDate).diff(moment(), "minutes");
+      }
+      
       //moment().format('hh:mm:ss')
       //debugger;
       // full list of items to the well
@@ -214,8 +222,8 @@
         newsDiv.append("<td>" + childSnapshot.val().tname + "</td>");
         newsDiv.append("<td>" + childSnapshot.val().dest + "</td>");
         newsDiv.append("<td>" + childSnapshot.val().freq + "</td>");
-        newsDiv.append("<td>" + moment(k).format('HH:SS') + "</td>");
-        newsDiv.append("<td>" + Math.round(freq_int - j) + "</td>");
+        newsDiv.append("<td>" + k + "</td>");
+        newsDiv.append("<td>" + l + "</td>");
         $(".table tbody").prepend(newsDiv);
     // Handle the errors
     }, function(errorObject) {
