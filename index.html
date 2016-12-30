@@ -194,6 +194,16 @@
       console.log(childSnapshot.val().freq);
       console.log(childSnapshot.val().dateAdded);
       console.log(childSnapshot.val());
+      var convertedDate = "Dec 29 2016 " + childSnapshot.val().firstTrain + " am";
+      console.log(convertedDate);
+      var freq_int = parseInt(childSnapshot.val().freq);
+      var i = parseInt(moment().diff(moment(convertedDate), "minutes") )/childSnapshot.val().freq;
+      console.log(i);
+      var j = freq_int * (i - Math.floor(i));
+      console.log();
+      console.log(freq_int - j)
+      var k = moment().add((freq_int - j),'minutes').toString();
+      //moment().format('hh:mm:ss')
       //debugger;
       // full list of items to the well
       /*$("#full-member-list").append("<div class='well'><span id='name'> " + childSnapshot.val().name +
@@ -204,8 +214,8 @@
         newsDiv.append("<td>" + childSnapshot.val().tname + "</td>");
         newsDiv.append("<td>" + childSnapshot.val().dest + "</td>");
         newsDiv.append("<td>" + childSnapshot.val().freq + "</td>");
-        newsDiv.append("<td>" + childSnapshot.val().firstTrain + "</td>");
-        newsDiv.append("<td>" + moment().format('hh:mm:ss') + "</td>");
+        newsDiv.append("<td>" + moment(k).format('HH:SS') + "</td>");
+        newsDiv.append("<td>" + Math.round(freq_int - j) + "</td>");
         $(".table tbody").prepend(newsDiv);
     // Handle the errors
     }, function(errorObject) {
